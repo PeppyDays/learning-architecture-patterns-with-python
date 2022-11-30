@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "allocation"
+version = "0.1.0"
+description = ""
+authors = ["Dongkyun You <peppydays@gmail.com>"]
+readme = "README.md"
+packages = [{include = "allocation", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.0"
+black = {extras = ["d"], version = "^22.10.0"}
+pre-commit = "^2.20.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+target-version = ['py311']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
