@@ -2,18 +2,19 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date
+from uuid import UUID
 
 
 @dataclass(frozen=True)
 class OrderLine:
-    identifier: str
+    order_id: UUID
     sku: str
     quantity: int
 
 
 @dataclass
 class Batch:
-    identifier: str
+    batch_id: UUID
     sku: str
     total_quantity: int
     eta: date | None = None
@@ -37,7 +38,7 @@ class Batch:
         if not isinstance(other, Batch):
             return NotImplemented
 
-        return self.identifier == other.identifier
+        return self.batch_id == other.batch_id
 
     def __hash__(self) -> int:
-        return hash(self.identifier)
+        return hash(self.batch_id)
