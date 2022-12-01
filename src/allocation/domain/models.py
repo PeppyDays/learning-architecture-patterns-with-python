@@ -18,21 +18,21 @@ class Batch:
     sku: str
     total_quantity: int
     eta: date | None = None
-    _allocated_lines: set[OrderLine] = field(default_factory=set)
+    allocated_order_lines: set[OrderLine] = field(default_factory=set)
 
     @property
     def available_quantity(self) -> int:
-        return self.total_quantity - sum(line.quantity for line in self._allocated_lines)
+        return self.total_quantity - sum(line.quantity for line in self.allocated_order_lines)
 
     def allocate(self, line: OrderLine) -> None:
-        self._allocated_lines.add(line)
+        self.allocated_order_lines.add(line)
 
     def can_allocate(self, line: OrderLine) -> bool:
         return self.sku == line.sku and self.available_quantity >= line.quantity
 
     def deallocate(self, line: OrderLine) -> None:
-        if line in self._allocated_lines:
-            self._allocated_lines.remove(line)
+        if line in self.allocated_order_lines:
+            self.allocated_order_lines.remove(line)
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Batch):
