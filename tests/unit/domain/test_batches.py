@@ -1,4 +1,3 @@
-import uuid
 from datetime import date, timedelta
 
 import pytest
@@ -30,8 +29,8 @@ def test_can_allocate_if_available_equals_to_required():
 
 
 def test_cannot_allocate_if_skus_do_not_match():
-    batch = Batch(uuid.uuid4(), "UNCOMFORTABLE-CHAIR", 100, eta=None)
-    line = OrderLine(uuid.uuid4(), "EXPENSIVE-TOASTER", 10)
+    batch = Batch("batch-1", "UNCOMFORTABLE-CHAIR", 100, eta=None)
+    line = OrderLine("order-1", "EXPENSIVE-TOASTER", 10)
     assert batch.can_allocate(line) is False
 
 
@@ -49,9 +48,9 @@ def test_allocation_is_idempotent():
 
 
 def test_prefers_current_stock_batches_to_shipments():
-    in_stock_batch = Batch(uuid.uuid4(), "RETRO-CLOCK", 100, eta=None)
-    shipment_batch = Batch(uuid.uuid4(), "RETRO-CLOCK", 100, eta=date.today() + timedelta(days=1))
-    line = OrderLine(uuid.uuid4(), "RETRO-CLOCK", 10)
+    in_stock_batch = Batch("batch-1", "RETRO-CLOCK", 100, eta=None)
+    shipment_batch = Batch("batch-2", "RETRO-CLOCK", 100, eta=date.today() + timedelta(days=1))
+    line = OrderLine("order-1", "RETRO-CLOCK", 10)
 
     allocated_batch = allocate(line, [in_stock_batch, shipment_batch])
 
@@ -61,10 +60,10 @@ def test_prefers_current_stock_batches_to_shipments():
 
 
 def test_prefers_earlier_batches():
-    earliest = Batch(uuid.uuid4(), "MINIMALIST-SPOON", 100, eta=date.today())
-    medium = Batch(uuid.uuid4(), "MINIMALIST-SPOON", 100, eta=date.today() + timedelta(days=1))
-    latest = Batch(uuid.uuid4(), "MINIMALIST-SPOON", 100, eta=date.today() + timedelta(days=2))
-    line = OrderLine(uuid.uuid4(), "MINIMALIST-SPOON", 10)
+    earliest = Batch("batch-1", "MINIMALIST-SPOON", 100, eta=date.today())
+    medium = Batch("batch-2", "MINIMALIST-SPOON", 100, eta=date.today() + timedelta(days=1))
+    latest = Batch("batch-3", "MINIMALIST-SPOON", 100, eta=date.today() + timedelta(days=2))
+    line = OrderLine("order-1", "MINIMALIST-SPOON", 10)
 
     allocated_batch = allocate(line, [medium, earliest, latest])
 
@@ -83,6 +82,6 @@ def test_raises_out_of_stock_exception_if_cannot_allocate():
 
 def make_batch_and_line(sku: str, *, batch_quantity: int, line_quantity: int) -> tuple[Batch, OrderLine]:
     return (
-        Batch(uuid.uuid4(), sku, batch_quantity, eta=None),
-        OrderLine(uuid.uuid4(), sku, line_quantity),
+        Batch("batch-1", sku, batch_quantity, eta=None),
+        OrderLine("order-1", sku, line_quantity),
     )

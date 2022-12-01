@@ -2,19 +2,18 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date
-from uuid import UUID
 
 
 @dataclass(frozen=True)
 class OrderLine:
-    order_id: UUID
+    order_id: str
     sku: str
     quantity: int
 
 
 @dataclass
 class Batch:
-    batch_id: UUID
+    batch_id: str
     sku: str
     total_quantity: int
     eta: date | None = None
