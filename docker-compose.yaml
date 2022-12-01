@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  allocation-local-database:
+    image: mysql:8
+    platform: linux/x86_64
+    hostname: allocation-local-database
+    container_name: allocation-local-database
+    ports:
+      - "13306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: welcome
+    volumes:
+      - ./resources/db/initialisation:/docker-entrypoint-initdb.d
+    command:
+      - --character-set-client-handshake=0
+      - --slow-query-log=1
+      - --long-query-time=2
+      - --performance-schema=ON
+      - --performance-schema-consumer-events-statements-current=1
+      - --performance-schema-consumer-events-statements-history=1
+      - --performance-schema-consumer-events-waits-current=ON
+      - --performance-schema-max-digest-length=4096
+      - --performance-schema-max-sql-text-length=4096
