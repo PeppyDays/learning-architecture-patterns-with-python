@@ -30,7 +30,9 @@ class BatchDataModel(Base):
             sku=self.sku,
             total_quantity=self.total_quantity,
             eta=self.eta,
-            allocated_order_lines=set(OrderLine(**line) for line in json.loads(self.allocated_order_lines)),
+            allocated_order_lines=set(
+                OrderLine(**line) for line in json.loads(self.allocated_order_lines)
+            ),
         )
 
     @staticmethod
@@ -40,5 +42,7 @@ class BatchDataModel(Base):
             sku=batch.sku,
             total_quantity=batch.total_quantity,
             eta=batch.eta,
-            allocated_order_lines=json.dumps(list(dataclasses.asdict(line) for line in batch.allocated_order_lines)),
+            allocated_order_lines=json.dumps(
+                list(dataclasses.asdict(line) for line in batch.allocated_order_lines)
+            ),
         )

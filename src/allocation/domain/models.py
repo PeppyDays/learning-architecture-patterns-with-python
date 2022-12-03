@@ -21,7 +21,9 @@ class Batch:
 
     @property
     def available_quantity(self) -> int:
-        return self.total_quantity - sum(line.quantity for line in self.allocated_order_lines)
+        return self.total_quantity - sum(
+            line.quantity for line in self.allocated_order_lines
+        )
 
     def allocate(self, line: OrderLine) -> None:
         self.allocated_order_lines.add(line)

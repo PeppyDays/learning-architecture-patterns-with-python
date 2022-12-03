@@ -15,5 +15,7 @@ class BatchSqlAlchemyRepository(BatchRepository):
         self._session.add(BatchDataModel.from_domain_model(batch))
 
     def find_by_batch_id(self, batch_id: str) -> Batch | None:
-        data_model = self._session.query(BatchDataModel).filter_by(batch_id=batch_id).first()
+        data_model = (
+            self._session.query(BatchDataModel).filter_by(batch_id=batch_id).first()
+        )
         return data_model.to_domain_model() if data_model else None
