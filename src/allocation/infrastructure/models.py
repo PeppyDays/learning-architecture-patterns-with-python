@@ -4,7 +4,7 @@ import dataclasses
 import json
 from datetime import date
 
-from sqlalchemy import String, Date, Text, SmallInteger
+from sqlalchemy import String, Date, Text, SmallInteger, BigInteger
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, MappedAsDataclass
 
 from allocation.domain.models import Batch, OrderLine
@@ -17,8 +17,8 @@ class Base(MappedAsDataclass, DeclarativeBase):
 class BatchDataModel(Base):
     __tablename__ = "batches"
 
-    id: Mapped[int] = mapped_column(init=False, primary_key=True)
-    batch_id: Mapped[str] = mapped_column(String(50), nullable=False)
+    id: Mapped[int] = mapped_column(BigInteger, init=False, primary_key=True)
+    batch_id: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
     sku: Mapped[str] = mapped_column(String(50), nullable=False)
     total_quantity: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     eta: Mapped[date | None] = mapped_column(Date)
@@ -30,9 +30,7 @@ class BatchDataModel(Base):
             sku=self.sku,
             total_quantity=self.total_quantity,
             eta=self.eta,
-            allocated_order_lines=set(
-                OrderLine(**line) for line in json.loads(self.allocated_order_lines)
-            ),
+            allocated_order_lines=deserialize_order_lines(self.allocated_order_lines),
         )
 
     @staticmethod
@@ -42,7 +40,13 @@ class BatchDataModel(Base):
             sku=batch.sku,
             total_quantity=batch.total_quantity,
             eta=batch.eta,
-            allocated_order_lines=json.dumps(
-                list(dataclasses.asdict(line) for line in batch.allocated_order_lines)
-            ),
+            allocated_order_lines=serialize_order_lines(batch.allocated_order_lines),
         )
+
+
+def serialize_order_lines(order_lines: set[OrderLine]) -> str:
+    return json.dumps(list(dataclasses.asdict(line) for line in order_lines))
+
+
+def deserialize_order_lines(order_lines: str) -> set[OrderLine]:
+    return set(OrderLine(**line) for line in json.loads(order_lines))

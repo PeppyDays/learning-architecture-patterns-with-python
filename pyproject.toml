@@ -17,6 +17,7 @@ black = {extras = ["d"], version = "^22.10.0"}
 pre-commit = "^2.20.0"
 jupyter = "^1.0.0"
 mypy = "^0.991"
+alembic = "^1.8.1"
 
 [build-system]
 requires = ["poetry-core"]
