@@ -27,6 +27,10 @@ class SqlAlchemyBatchRepository(BatchRepository):
         data_models = self._session.query(BatchDataModel).all()
         return [data_model.to_domain_model() for data_model in data_models]
 
+    def find_by_sku(self, sku: str) -> Iterable[Batch]:
+        data_models = self._session.query(BatchDataModel).filter_by(sku=sku).all()
+        return [data_model.to_domain_model() for data_model in data_models]
+
 
 class FakeBatchRepository(BatchRepository):
     _batches: list[Batch]
@@ -42,3 +46,8 @@ class FakeBatchRepository(BatchRepository):
 
     def find_all(self) -> Iterable[Batch]:
         return self._batches
+
+    def find_by_sku(self, sku: str) -> Iterable[Batch]:
+        for b in self._batches:
+            if b.sku == sku:
+                yield b

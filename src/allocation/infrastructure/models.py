@@ -19,7 +19,7 @@ class BatchDataModel(Base):
 
     id: Mapped[int] = mapped_column(BigInteger, init=False, primary_key=True)
     batch_id: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
-    sku: Mapped[str] = mapped_column(String(50), nullable=False)
+    sku: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
     total_quantity: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     eta: Mapped[date | None] = mapped_column(Date)
     allocated_order_lines: Mapped[str | None] = mapped_column(Text)

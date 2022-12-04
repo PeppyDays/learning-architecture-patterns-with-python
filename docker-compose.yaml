@@ -1,24 +1,45 @@
 version: '3'
 
 services:
+
+  allocation-local-application:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+    - allocation-local-database
+    environment:
+    - DB_HOST=allocation-local-database
+    - DB_USER=allocation
+    - DB_PASSWORD=welcome
+    - DB_SCHEMA=allocation
+    - API_HOST=allocation-local-application
+    - PYTHONUNBUFFERED=1
+    - PYTHONDONTWRITEBYTECODE=1
+    volumes:
+    - ./src:/app/src
+    - ./tests:/app/tests
+    ports:
+    - "18080:8080"
+
   allocation-local-database:
     image: mysql:8
     platform: linux/x86_64
     hostname: allocation-local-database
     container_name: allocation-local-database
     ports:
-      - "13306:3306"
+    - "13306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: welcome
     volumes:
-      - ./resources/db/initialisation:/docker-entrypoint-initdb.d
+    - ./resources/db/initialisation:/docker-entrypoint-initdb.d
     command:
-      - --character-set-client-handshake=0
-      - --slow-query-log=1
-      - --long-query-time=2
-      - --performance-schema=ON
-      - --performance-schema-consumer-events-statements-current=1
-      - --performance-schema-consumer-events-statements-history=1
-      - --performance-schema-consumer-events-waits-current=ON
-      - --performance-schema-max-digest-length=4096
-      - --performance-schema-max-sql-text-length=4096
+    - --character-set-client-handshake=0
+    - --slow-query-log=1
+    - --long-query-time=2
+    - --performance-schema=ON
+    - --performance-schema-consumer-events-statements-current=1
+    - --performance-schema-consumer-events-statements-history=1
+    - --performance-schema-consumer-events-waits-current=ON
+    - --performance-schema-max-digest-length=4096
+    - --performance-schema-max-sql-text-length=4096
