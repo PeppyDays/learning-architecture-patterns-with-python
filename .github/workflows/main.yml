@@ -1,0 +1,15 @@
+on:
+  workflow_dispatch:
+
+name: Input Test
+run-name: Input Test with ${{ github.ref_name }} by @${{ github.actor }}
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+    - name: debug
+      run: |
+        echo "ref: ${{ github.ref }}"
+        echo "ref_name: ${{ github.ref_name }}"
+        echo "ref_type: ${{ github.ref_type }}"
